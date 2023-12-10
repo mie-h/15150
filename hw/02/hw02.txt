@@ -1,0 +1,43 @@
+task2.3
+(i) x::y::z::nil or [x,y,z]
+(ii) not possible
+(iii) (x,y),l 
+if you want to match a list of lists: [x,y]::l
+(iv) (x::y),(i::j)  
+or (x::xs), (y::ys)
+
+task2.4
+(a) bind 2 to x. data type of x is int
+(b) bind 2 * 6.2 to m. data type of m is real
+(c) bind 9001 to x. data type of x is int
+(d)
+x = 2
+m = 6.2 * 2 = 12.4
+x = 9001
+y = 12.4 * 3.0 = 37.2
+y-m = 37.2 - 12.4 = 24.8
+trunc g = 24
+x + g = 3 + 24 = 27
+
+task2.5
+skip
+
+task2.6
+skip
+
+task2.7
+skip
+
+task3.2
+S0 = 0
+S1 = 1/2 
+S2 = 1/2 + 1/4
+S3 = 1/2 + 1/4 + 1/8
+
+task3.4
+I0 = 0
+I1 = 1/2 = 0.5
+I2 = 1/2 - 1/4
+I3 = 1/2 - 1/4 + 1/8
+
+
