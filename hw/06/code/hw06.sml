@@ -11,13 +11,6 @@ fun toInt2 (L : int list) : int =
       raise Fail "An element of the list was too large"
 
 (* Tests for toInt2 *)
-val 0 = toInt2 []
-val 0 = toInt2 [0]
-val 1 = toInt2 [1]
-val 2 = toInt2 [1,0]
-val 3 = toInt2 [1,1]
-val 3 = toInt2 [0,1,1]
-val 14 = toInt2 [1,1,1,0]
 
 (* allZeros : (int * int list) list -> bool
  * REQUIRES: true

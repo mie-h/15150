@@ -34,7 +34,7 @@ val validChars = String.explode "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSUV
  * REQUIRES:
  * ENSURES:
 *)
-fun anyChar (L : char list) : regexp = foldr (fn (c,R) => Plus(Char c, R)) (Zero) L
+fun anyChar (L : char list) : regexp = foldr (fn (c, R) => Plus(Char c, R)) Zero L
 
 (* Test cases *)
 val Zero = anyChar []
@@ -47,24 +47,29 @@ val Plus(Char #"p", Plus(Char #"l", Zero)) = anyChar [#"p",#"l"]
  * REQUIRES:
  * ENSURES:
  *)
-fun fromString s = foldr (fn (c,R) => Times(Char c, R)) (Zero) String.explode(s)
+fun fromString s = foldr (fn (c, R) => Times(Char c, R)) One (String.explode s)
 
-
+(* Test cases *)
+val One = fromString ""
+val Times(Char #"a", One) = fromString "a"
+val Times(Char #"a", Times(Char #"b", One)) = fromString "ab"
 
 (*
  * anyString : string list -> regexp
  * REQUIRES:
  * ENSURES:
 *)
-fun anyString (L : string list) : regexp = raise Unimplemented
+fun anyString (L : string list) : regexp = foldr (fn (s, R) => Plus(fromString s, R)) Zero L
 
 
+ val validChars =
+    String.explode "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-"
 
 (*
  * emailer : string -> regexp
  * REQUIRES:
  * ENSURES: *)
-fun emailer (d : string) : regexp = raise Unimplemented
+fun emailer (d : string) : regexp = Times(Times(Star(anyChar validChars), Char #"@"),Times(Star(anyChar validChars), fromString d))
 
 (********************** Task 5 ********************)
 

@@ -175,7 +175,7 @@ val LESS = treecompare(Node(Empty, 3, Empty), Node(Empty, 4, Empty))
 (* REQUIRES: a, b are both minheaps *)
 (* ENSURES: swapDown(t) is a minheap *)
 fun swapDown(Empty : tree) : tree = Empty
-  | swapDown(T as Node(a, x, b)) =
+  | swapDown(T as Node(a, x, ``b``)) =
     let
         val (smallTree, bigTree) = case treecompare(a, b) of GREATER => (b, a)
                                                            | _       => (a, b)

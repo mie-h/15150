@@ -23,11 +23,11 @@ fun quadrupleList ([]:int list): int list = []
     (quadruple x)::(quadrupleList xs)
 
 (* Task 3.3 *)
-fun mapList (f: 'a -> 'b, [] : 'a list): 'b list = []
-  | mapList (f: 'a -> 'b, x::L : 'a list): 'b list = (f x)::mapList(f, L)
+fun mapList = raise Fail ""
 
 (* Task 3.4 *)
-fun mapList' (f: 'a -> 'b) (L : 'a list) : 'b list = mapList(f, L)
+fun mapList' _ [] = []
+  | mapList' f (x::xs) = (f x)::(mapList' f xs)
 
 (* Task 3.5 *)
 (* Tests for mapList *)
