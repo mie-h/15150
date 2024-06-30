@@ -12,29 +12,35 @@ datatype regexp =
   | Whatever
   | Both of regexp * regexp
 
+fun isEmpty [] = true
+  | isEmpty _ = false
+
 (* match : regexp -> char list -> (char list -> bool) -> bool *)
 (* REQUIRES; p is a total function *)
 (* ENSURES: match R L p evaluates to true if there exists L1, L2 such that L=L1@L2 and L1 is in R and p(L2)=true and false otherwise *)
 fun match (R : regexp) (L : char list) (p : char list -> bool) : bool =
-    case R of
-        Zero => false
-      | One => p L
-      | Char c => (case L of
-                     [] => false
-                   | c' :: L' => (c = c') andalso p L')
-      | Plus (R1, R2) => match R1 L p orelse match R2 L p
-      | Times (R1, R2) => match R1 L (fn L' => match R2 L' p)
-      | Star R => p L orelse match R L (fn L' => (L <> L') andalso
-                                                 match (Star R) L' p)
-      (* Task 2.1 *)
-      | Whatever => (case L of
-                     [] => p L
-                   | c'::L' => p L orelse match R L' p)
-                   
-      (* Task 2.2 *)
-      | Both (R1, R2) => match R1 L (fn L' => match R2 L (fn L'' => p L' andalso L' = L''))
-                         
-fun accept R s = match R (String.explode s) (fn [] => true | _ => false)
+    case R of 
+      Zero => false
+    | One => p L
+    | Char c => (case L of
+                  [] => false
+                | c'::cs' => c = c' andalso p cs')
+    | Plus(r1, r2) => match r1 L p orelse match r2 L p
+    | Times(r1, r2) => match r1 L (fn cs' => match r2 cs' p)
+    | Star r => 
+      let 
+        fun matchstar cs = p cs orelse match r cs matchstar
+      in
+        matchstar L 
+      end
+    | Whatever => (case L of
+                    [] => p L
+                  | _::cs => p L orelse match Whatever cs p)
+    (* ".*a", "bcba" vs ".*a "bcbb" *)
+    | Both (r1, r2) => match r1 L (fn L' => match r2 L (fn L'' => L' = L'' andalso p L''))
+      
+
+fun accept R s = match R (String.explode s) (fn x => case x of [] => true | _ => false)
 
 (* Task 2.1 Tests *)
 val true = accept Whatever "abc"
@@ -55,7 +61,12 @@ val false = accept (Both(R1,R2)) ""
 (* halfmatch : regexp -> regexp -> char list -> bool *)
 (* REQUIRES: true *)
 (* ENSURES: halfmatch R1 R2 L evaluates to true if and only if there exists L1, L2 such that L=L1@L2, length(L1)=length(L2), and L1 is in R1 and L2 is in R2 *)
-fun halfmatch (R1 : regexp) (R2 : regexp) (L : char list) : bool = match R1 L (fn L' => match R2 L' (fn L'' => L'' = []) andalso length(L) = 2 * length(L'))
+fun halfmatch (r1 : regexp) (r2 : regexp) (l : char list) : bool = 
+  match r1 l (fn l2 => 
+    match r2 l2 (fn lst => 
+      case lst of 
+        [] => (((length l) div 2) = length l2)
+      | _ => false))
 
 (* Tests for halfmatch *)
 val R1 = Star(Plus(Char #"a", Plus(Char #"b", Char #"c")))
