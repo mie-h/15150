@@ -24,11 +24,7 @@ struct
      in
        if q = n then raise Prime
        else
-	     let
-	       val q_divs = factorizer q handle Prime => [q]
-	     in
-	       q_divs @ factorizer (n div q) handle Prime => [q, n div q]
-	     end
+          q::(factorizer (n div q) handle Prime => [n div q])
      end
 
 end

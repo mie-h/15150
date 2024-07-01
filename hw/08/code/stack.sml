@@ -9,40 +9,47 @@ struct
 	(* empty : unit -> stack *)
 	(* REQUIRES: true *)
 	(* ENSURES: empty evaluates to an empty stack *)
-	val empty = fn () => []
+	fun empty () = []
 	
 	(* push : (stack * stacktype) -> stack *)
 	(* REQUIRES: true *)
 	(* ENSURES: push(S,x) evaluates to S with x pushed onto the top *)
-	fun push (S : stack, x : stacktype) : stack = x::S
+	fun push (S, x) = x::S
 	
 	(*  *)
 	(* REQUIRES: true *)
 	(* ENSURES: pop S evalutes to S with the top element removed
 	 * and raises StackUnderFlow if S is empty *)
-	fun pop ([] : stack) : stacktype * stack = raise StackUnderflow
-	  | pop (x::S : stack) : stacktype * stack = (x, S)
+	fun pop [] = raise StackUnderflow
+	  | pop (x::xs) = (x, xs) 
 	
 	(* append : (stack * stack) -> stack *)
 	(* REQUIRES: true *)
 	(* ENSURES: append(S1,S2) evaluates to S1 put on top of S2 *)
-	fun append(S1 : stack, S2 : stack) = S1 @ S2
-	
+	fun append (S1, S2) = S1 @ S2
+
+
 	(* find : (stack * (stacktype -> bool)) -> stack option *)
 	(* REQUIRES: true *)
 	(* ENSURES: find(S,p) evaluates to the largest substack of S
 	 * whose top element satisfies p *)
-	fun find ([] : stack, p : stacktype -> bool) : stack option = NONE
-	  | find (x::S : stack, p : stacktype -> bool) : stack option = 
-	      if p x
-	        then SOME (x::S)
-	        else find(S, p)
+	fun find (S, p) = 
+		case S of
+			[] => NONE
+		|   (l as x::xs) => if p x then SOME l
+					      else find (xs, p) 
 	        
 	(* flip : stack -> stack *)
 	(* REQUIRES: true *)
 	(* ENSURES: flip S flips the stack S *)
-	fun flip ([] : stack) : stack = []
-	  | flip (x::S : stack) : stack = flip(S) @ [x]
+	fun flip s = 
+		let
+			fun flip' reversed lst = case lst of
+									   [] => reversed
+									 | x::xs => flip' (x::reversed) xs
+		in
+			flip' [] s
+		end
 
 end
 

@@ -10,16 +10,15 @@ struct
   (* REQUIRES: true *)
   (* ENSURES: find p T evaluates to a subtree of T whose root satisfies p
    * and raises NoSubtree if no such subtree exists *)
-  fun find (p : 'a -> bool) (Empty : 'a tree) : 'a tree = raise NoSubtree
-    | find (p : 'a -> bool) (Node(x,[]) : 'a tree) : 'a tree = 
-        if p x
-          then Node(x,[])
-          else raise NoSubtree
-    | find (p : 'a -> bool) (Node(x,y::L) : 'a tree) : 'a tree =
-        if p x
-          then Node(x,y::L)
-          else find p y handle NoSubtree => find p (Node(x,L))
-
+  fun find p Empty = raise NoSubtree
+    | find p (n as (Node (x, children))) = 
+      if p x then n
+      else let
+              fun first [] = raise NoSubtree
+                | first (x::xs) = find p x handle NoSubtree => first xs
+            in
+              first children
+            end
 end
 
 
